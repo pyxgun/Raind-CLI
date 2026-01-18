@@ -1,4 +1,7 @@
 # Raind CLI
+<p>
+  <img src="assets/raind_cli_icon.png" alt="Project Icon" width="190">
+</p>
 Raind CLI is the user-facing command-line interface of the Raind container runtime stack.
 It provides a unified interface for creating, managing, and interacting with containers by communicating with the high-level container runtime via REST and WebSocket APIs.
 
@@ -11,7 +14,7 @@ The Raind container runtime stack is composed of three layers:
 - **Raind CLI** – A command-line interface that accepts user input and controls the runtime stack
 (this repository)
 
-- **Condenser** – A high-level container runtime responsible for container lifecycle management, image handling, and state management
+- **Condenser** – A high-level container runtime responsible for container lifecycle management, image handling, and state management  
 (repository: https://github.com/pyxgun/Condenser)
 
 - **Droplet** – A low-level container runtime that performs container setup and execution in an OCI-compliant manner  
@@ -37,7 +40,7 @@ Raind CLI currently supports:
 - Go (version 1.25 or later)
 - A running Condenser service
 ```bash
-git clone https://github.com/pyxgun/raind-cli.git
+git clone git@github.com:pyxgun/Raind-CLI.git
 cd raind-cli
 go build -o raind ./cmd/raind
 ```
