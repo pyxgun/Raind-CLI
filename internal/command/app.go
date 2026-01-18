@@ -22,6 +22,7 @@ func NewApp() *cli.App {
 					containercommand.CommandList(),
 					containercommand.CommandAttach(),
 					containercommand.CommandRun(),
+					containercommand.CommandExec(),
 				},
 			},
 			{
