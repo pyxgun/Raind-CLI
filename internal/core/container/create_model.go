@@ -7,6 +7,7 @@ type ServiceCreateModel struct {
 	Volume  []string
 	Publish []string
 	Tty     bool
+	Name    string
 }
 
 type CreateRequestModel struct {
@@ -16,6 +17,7 @@ type CreateRequestModel struct {
 	Volume  []string `json:"mount,omitempty"`
 	Publish []string `json:"port,omitempty"`
 	Tty     bool     `json:"tty,omitempty"`
+	Name    string   `json:"name,omitempty"`
 }
 
 type CreateResponseDataModel struct {

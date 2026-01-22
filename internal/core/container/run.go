@@ -49,7 +49,7 @@ func (s *ServiceContianerRun) Run(param ServiceRunModel) error {
 	}
 
 	// 4. remove
-	time.Sleep(1010 * time.Millisecond) // wait for hook
+	time.Sleep(200 * time.Millisecond) // wait for hook
 	if param.Rm {
 		serviceRemove := NewServiceContainerRemove()
 		if err := serviceRemove.Remove(ServiceRemoveModel{Id: containerId}); err != nil {

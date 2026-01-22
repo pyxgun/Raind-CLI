@@ -35,6 +35,15 @@ func CommandCreate() *cli.Command {
 				Usage:   "attach tty to container",
 				Value:   false,
 			},
+			&cli.BoolFlag{
+				Name:    "interactive",
+				Aliases: []string{"i"},
+			},
+			&cli.StringFlag{
+				Name:  "name",
+				Usage: "container name",
+				Value: "",
+			},
 		},
 		Action: runCreate,
 	}
@@ -61,6 +70,7 @@ func runCreate(ctx *cli.Context) error {
 		return err
 	}
 	opt_tty := ctx.Bool("tty")
+	opt_name := ctx.String("name")
 
 	service := container.NewServiceContainerCreate()
 	containerId, err := service.Create(
@@ -71,6 +81,7 @@ func runCreate(ctx *cli.Context) error {
 			Volume:  opt_volume,
 			Publish: opt_publish,
 			Tty:     opt_tty,
+			Name:    opt_name,
 		},
 	)
 	if err != nil {
