@@ -10,6 +10,7 @@ type ForwardInfoModel struct {
 
 type ContainerStateModel struct {
 	ContainerId string   `json:"containerId"`
+	Name        string   `json:"name"`
 	State       string   `json:"state"`
 	Pid         int      `json:"pid"`
 	Repository  string   `json:"imageRepository"`

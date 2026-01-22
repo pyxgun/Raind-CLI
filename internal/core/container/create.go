@@ -23,6 +23,7 @@ func (s *ServiceContainerCreate) Create(param ServiceCreateModel) (string, error
 			Volume:  param.Volume,
 			Publish: param.Publish,
 			Tty:     param.Tty,
+			Name:    param.Name,
 		},
 	)
 	if err != nil {
@@ -48,7 +49,7 @@ func (s *ServiceContainerCreate) Create(param ServiceCreateModel) (string, error
 		if decodeErr != nil {
 			return "", fmt.Errorf("decode response: %w", decodeErr)
 		}
-		return "", fmt.Errorf("unexpected status: %s: %s", resp.Status, respModel.Message)
+		return "", fmt.Errorf("%s", respModel.Message)
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&respModel); err != nil {

@@ -40,8 +40,5 @@ func runStart(ctx *cli.Context) error {
 	}); err != nil {
 		return err
 	}
-
-	fmt.Printf("container: %s started\n", containerId)
-
 	return nil
 }

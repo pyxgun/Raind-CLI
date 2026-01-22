@@ -60,7 +60,7 @@ func (s *ServiceContainerList) printContainerList(containerList []ContainerState
 	)
 
 	// header
-	fmt.Fprintln(w, "CONTAINER ID\tIMAGE\tCOMMAND\tCREATED\tSTATUS\tPORTS")
+	fmt.Fprintln(w, "CONTAINER ID\tIMAGE\tCOMMAND\tCREATED\tSTATUS\tPORTS\tNAME")
 
 	// helper: command formatter
 	formatCommand := func(command []string) string {
@@ -108,7 +108,8 @@ func (s *ServiceContainerList) printContainerList(containerList []ContainerState
 		created := formatTime(c.CreatedAt)
 		status := c.State
 		port := formatPort(c.Forwards)
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\n", containerId, image, command, created, status, port)
+		name := c.Name
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n", containerId, image, command, created, status, port, name)
 	}
 
 	w.Flush()

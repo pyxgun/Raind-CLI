@@ -5,3 +5,4 @@ MAINDIR=./cmd/raind
 BINNAME=raind
 
 go build -o $BINDIR/$BINNAME $MAINDIR
+sudo cp $BINDIR/$BINNAME /usr/bin
