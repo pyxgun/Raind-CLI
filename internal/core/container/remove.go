@@ -33,14 +33,14 @@ func (s *ServiceContainerRemove) Remove(param ServiceRemoveModel) error {
 		if decodeErr != nil {
 			return fmt.Errorf("decode response: %w", decodeErr)
 		}
-		return fmt.Errorf("unexpected status: %s: %s", resp.Status, respModel.Message)
+		return fmt.Errorf("%s", respModel.Message)
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&respModel); err != nil {
 		return fmt.Errorf("decode response: %w", err)
 	}
 
-	fmt.Printf("container: %s removed\n", respModel.Data.Id)
+	fmt.Printf("container: %s removed\n", param.Id)
 
 	return nil
 }
