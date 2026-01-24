@@ -1,10 +1,7 @@
 package container
 
 import (
-	"crypto/tls"
-	"crypto/x509"
 	"encoding/binary"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -41,7 +38,12 @@ func (c *ServiceContainerAttach) Attach(containerId string) error {
 	}
 
 	// Dial websocket
-	dialer, err := NewWSDialerWithCA(utils.PublicCertPath)
+	httpClient := httpclient.NewHttpClient()
+	dialer, err := httpClient.NewMTLSDialer(
+		utils.PublicCertPath,
+		utils.ClientCertPath,
+		utils.ClientKeyPath,
+	)
 	if err != nil {
 		return err
 	}
@@ -113,26 +115,6 @@ func (c *ServiceContainerAttach) Attach(containerId string) error {
 		wg.Wait()
 		return nil
 	}
-}
-
-func NewWSDialerWithCA(caPath string) (*websocket.Dialer, error) {
-	pemBytes, err := os.ReadFile(caPath)
-	if err != nil {
-		return nil, err
-	}
-
-	pool := x509.NewCertPool()
-	if ok := pool.AppendCertsFromPEM(pemBytes); !ok {
-		return nil, errors.New("failed to append CA cert")
-	}
-
-	d := *websocket.DefaultDialer
-	d.TLSClientConfig = &tls.Config{
-		RootCAs:    httpclient.ReadCACert(),
-		MinVersion: tls.VersionTLS13,
-	}
-
-	return &d, nil
 }
 
 // pumpStdinAsFrames reads from stdin and writes data frames to w.

@@ -76,7 +76,12 @@ func (c *ServiceContainerExec) attach(containerId string) error {
 	}
 
 	// Dial websocket
-	dialer, err := NewWSDialerWithCA(utils.PublicCertPath)
+	httpClient := httpclient.NewHttpClient()
+	dialer, err := httpClient.NewMTLSDialer(
+		utils.PublicCertPath,
+		utils.ClientCertPath,
+		utils.ClientKeyPath,
+	)
 	if err != nil {
 		return err
 	}
