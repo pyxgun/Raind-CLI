@@ -12,9 +12,8 @@ func CommandList() *cli.Command {
 		Usage: "list policies",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "type",
-				Usage:    "policy type (ew/ns-obs/ns-enf)",
-				Required: true,
+				Name:  "type",
+				Usage: "policy type (ew/ns-obs/ns-enf)",
 			},
 		},
 		Action: runList,
@@ -23,13 +22,17 @@ func CommandList() *cli.Command {
 
 func runList(ctx *cli.Context) error {
 	// option
-	opt_type, err := validateType(ctx.String("type"))
-	if err != nil {
-		return err
+	opt_type := ctx.String("type")
+	if opt_type != "" {
+		got, err := validateType(ctx.String("type"))
+		if err != nil {
+			return err
+		}
+		opt_type = got
 	}
 
 	service := policy.NewServicePolicyList()
-	err = service.List(
+	err := service.List(
 		policy.ListRequestModel{
 			ChainName: opt_type,
 		},

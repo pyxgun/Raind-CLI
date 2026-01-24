@@ -17,18 +17,46 @@ func NewServicePolicyList() *ServicePolicyList {
 type ServicePolicyList struct{}
 
 func (s *ServicePolicyList) List(param ListRequestModel) error {
+	fmt.Println("FLAG: \"*\" - Applied, \"+\" - Apply next commit, \"-\" - Remove next commit, N/A - Not applied\n")
+
 	var chainName string
 	switch param.ChainName {
 	case "ew":
 		chainName = "RAIND-EW"
+		if err := s.requestGetList(chainName); err != nil {
+			return err
+		}
+
 	case "ns-obs":
 		chainName = "RAIND-NS-OBS"
+		if err := s.requestGetList(chainName); err != nil {
+			return err
+		}
+
 	case "ns-enf":
 		chainName = "RAIND-NS-ENF"
+		if err := s.requestGetList(chainName); err != nil {
+			return err
+		}
+
+	default:
+		if err := s.requestGetList("RAIND-EW"); err != nil {
+			return err
+		}
+		fmt.Println("\n===================\n")
+		if err := s.requestGetList("RAIND-NS-OBS"); err != nil {
+			return err
+		}
+		fmt.Println("\n===================\n")
+		if err := s.requestGetList("RAIND-NS-ENF"); err != nil {
+			return err
+		}
 	}
 
-	// request body
+	return nil
+}
 
+func (s *ServicePolicyList) requestGetList(chainName string) error {
 	httpClient := httpclient.NewHttpClient()
 	httpClient.NewRequest(
 		http.MethodGet,
@@ -55,12 +83,12 @@ func (s *ServicePolicyList) List(param ListRequestModel) error {
 		return fmt.Errorf("decode response: %w", err)
 	}
 
-	s.printPolicyList(param.ChainName, respModel.Data.Mode, respModel.Data.Policies)
+	s.printPolicyList(chainName, respModel.Data.Mode, respModel.Data.Policies)
 
 	return nil
 }
 
-func (s *ServicePolicyList) printPolicyList(group string, mode string, PolicyList []PolicyModel) {
+func (s *ServicePolicyList) printPolicyList(chainName string, mode string, PolicyList []PolicyModel) {
 	w := tabwriter.NewWriter(
 		os.Stdout,
 		0,
@@ -70,22 +98,20 @@ func (s *ServicePolicyList) printPolicyList(group string, mode string, PolicyLis
 		tabwriter.DiscardEmptyColumns,
 	)
 
-	// header
-	groupMap := map[string]string{
-		"ew":     "EAST-WEST",
-		"ns-obs": "NORTH-SOUTH",
-		"ns-enf": "NORTH-SOUTH",
-	}
-	fmt.Printf("POLICY TYPE: %s\n", groupMap[group])
-	fmt.Printf("MODE: %s\n\n", mode)
-	fmt.Println(`FLAG: "*" - Applied, "+" - Apply next commit, "-" - Remove next commit, N/A - Not applied`)
-	fmt.Fprintln(w, "\nFLAG\tPOLICY ID\tSRC CONTAINER\tDST CONTAINER\tPROTOCOL\tDST PORT\tCOMMENT\tREASON")
-
 	flagMap := map[string]string{
 		"before_commit":      "[+]",
 		"remove_next_commit": "[-]",
 		"applied":            "[*]",
 		"unresolved":         "[ ]",
+	}
+
+	fmt.Printf("POLICY TYPE: %s\n", chainName)
+	fmt.Printf("MODE: %s\n", mode)
+
+	if chainName == "RAIND-EW" {
+		fmt.Fprintln(w, "\nFLAG\tPOLICY ID\tSRC CONTAINER\tDST CONTAINER\tPROTOCOL\tDST PORT\tCOMMENT\tREASON")
+	} else {
+		fmt.Fprintln(w, "\nFLAG\tPOLICY ID\tSRC CONTAINER\tDST ADDR\tPROTOCOL\tDST PORT\tCOMMENT\tREASON")
 	}
 
 	// helper
@@ -101,7 +127,12 @@ func (s *ServicePolicyList) printPolicyList(group string, mode string, PolicyLis
 		flag := flagMap[p.Status]
 		id := p.Id
 		src := p.Source.ContainerName
-		dst := p.Destination.ContainerName
+		var dst string
+		if chainName == "RAIND-EW" {
+			dst = p.Destination.ContainerName
+		} else {
+			dst = p.Destination.Address
+		}
 		protocol := p.Protocol
 		dport := parseDport(p.DestPort)
 		comment := p.Comment

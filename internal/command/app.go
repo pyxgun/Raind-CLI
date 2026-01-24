@@ -44,6 +44,7 @@ func NewApp() *cli.App {
 					policycommand.CommandList(),
 					policycommand.CommandCommit(),
 					policycommand.CommandRemove(),
+					policycommand.CommandRevert(),
 				},
 			},
 		},

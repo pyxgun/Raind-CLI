@@ -17,16 +17,17 @@ type ListDataModel struct {
 }
 
 type PolicyModel struct {
-	Id          string             `json:"id"`
-	Status      string             `json:"status"`
-	Reason      string             `json:"reason"`
-	Source      ContainerInfoModel `json:"source"`
-	Destination ContainerInfoModel `json:"destination"`
-	Protocol    string             `json:"protocol"`
-	DestPort    int                `json:"dport"`
-	Comment     string             `json:"comment"`
+	Id          string        `json:"id"`
+	Status      string        `json:"status"`
+	Reason      string        `json:"reason"`
+	Source      HostInfoModel `json:"source"`
+	Destination HostInfoModel `json:"destination"`
+	Protocol    string        `json:"protocol"`
+	DestPort    int           `json:"dport"`
+	Comment     string        `json:"comment"`
 }
 
-type ContainerInfoModel struct {
+type HostInfoModel struct {
 	ContainerName string `json:"container_name"`
+	Address       string `json:"address"`
 }
