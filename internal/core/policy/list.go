@@ -18,7 +18,7 @@ func NewServicePolicyList() *ServicePolicyList {
 type ServicePolicyList struct{}
 
 func (s *ServicePolicyList) List(param ListRequestModel) error {
-	fmt.Println("FLAG: \"*\" - Applied, \"+\" - Apply next commit, \"-\" - Remove next commit, N/A - Not applied\n")
+	fmt.Println("FLAG: [*] - Applied, [+] - Apply next commit, [-] - Remove next commit, [ ] - Not applied\n")
 
 	var chainName string
 	switch param.ChainName {
@@ -124,17 +124,17 @@ func (s *ServicePolicyList) printPolicyList(chainName string, mode string, Polic
 	default:
 		policyType = "unknown"
 	}
-	fmt.Printf("POLICY TYPE: %s\n", policyType)
+	fmt.Printf("POLICY TYPE : %s\n", policyType)
 	// mode
 	if strings.Contains(mode, "_next_commit") {
 		mode = strings.Split(mode, "_")[0] + " (Next commit)"
 	}
-	fmt.Printf("MODE: %s\n", mode)
+	fmt.Printf("CURRENT MODE: %s\n", mode)
 
 	if chainName == "RAIND-EW" {
-		fmt.Fprintln(w, "\nFLAG\tPOLICY ID\tSRC CONTAINER\tDST CONTAINER\tPROTOCOL\tDST PORT\tCOMMENT\tREASON")
+		fmt.Fprintln(w, "\nFLAG\tPOLICY ID\tSRC CONTAINER\tDST CONTAINER\tPROTOCOL\tDST PORT\tACTION\tCOMMENT\tREASON")
 	} else {
-		fmt.Fprintln(w, "\nFLAG\tPOLICY ID\tSRC CONTAINER\tDST ADDR\tPROTOCOL\tDST PORT\tCOMMENT\tREASON")
+		fmt.Fprintln(w, "\nFLAG\tPOLICY ID\tSRC CONTAINER\tDST ADDR\tPROTOCOL\tDST PORT\tACTION\tCOMMENT\tREASON")
 	}
 
 	// helper
@@ -158,10 +158,25 @@ func (s *ServicePolicyList) printPolicyList(chainName string, mode string, Polic
 		}
 		protocol := p.Protocol
 		dport := parseDport(p.DestPort)
+		var action string
+		if chainName == "RAIND-EW" || chainName == "RAIND-NS-ENF" {
+			action = "ALLOW"
+		} else {
+			action = "DENY"
+		}
 		comment := p.Comment
 		reason := p.Reason
 
-		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", flag, id, src, dst, protocol, dport, comment, reason)
+		fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", flag, id, src, dst, protocol, dport, action, comment, reason)
+	}
+
+	switch chainName {
+	case "RAIND-EW":
+		fmt.Fprintln(w, "  >> DENY ALL EAST-WEST TRAFFIC <<")
+	case "RAIND-NS-OBS":
+		fmt.Fprintln(w, "  >> ALLOW ALL NORTH-SOUTH TRAFFIC <<")
+	case "RAIND-NS-ENF":
+		fmt.Fprintln(w, "  >> DENY ALL NORTH-SOUTH TRAFFIC <<")
 	}
 
 	w.Flush()
