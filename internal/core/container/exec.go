@@ -35,6 +35,9 @@ func (c *ServiceContainerExec) Exec(param ServiceExecModel) error {
 	}
 
 	httpClient := httpclient.NewHttpClient()
+	if httpClient == nil {
+		return fmt.Errorf("sudo required")
+	}
 	httpClient.NewRequest(
 		http.MethodPost,
 		fmt.Sprintf("/v1/containers/%s/actions/exec", param.ContainerId),
@@ -77,6 +80,9 @@ func (c *ServiceContainerExec) attach(containerId string) error {
 
 	// Dial websocket
 	httpClient := httpclient.NewHttpClient()
+	if httpClient == nil {
+		return fmt.Errorf("sudo required")
+	}
 	dialer, err := httpClient.NewMTLSDialer(
 		utils.PublicCertPath,
 		utils.ClientCertPath,

@@ -15,6 +15,9 @@ type ServicePolicyCommit struct{}
 
 func (s *ServicePolicyCommit) Commit() error {
 	httpClient := httpclient.NewHttpClient()
+	if httpClient == nil {
+		return fmt.Errorf("sudo required")
+	}
 	httpClient.NewRequest(
 		http.MethodPost,
 		"/v1/policies/commit",

@@ -25,6 +25,9 @@ func (s *ServiceImageRemove) Remove(param ServiceImageRemoveModel) error {
 	}
 
 	httpClient := httpclient.NewHttpClient()
+	if httpClient == nil {
+		return fmt.Errorf("sudo required")
+	}
 	httpClient.NewRequest(
 		http.MethodDelete,
 		"/v1/images",

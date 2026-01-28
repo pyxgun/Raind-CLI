@@ -15,6 +15,9 @@ type ServiceContainerStop struct{}
 
 func (s *ServiceContainerStop) Stop(param ServiceStopModel) error {
 	httpClient := httpclient.NewHttpClient()
+	if httpClient == nil {
+		return fmt.Errorf("sudo required")
+	}
 	httpClient.NewRequest(
 		http.MethodPost,
 		fmt.Sprintf("/v1/containers/%s/actions/stop", param.Id),

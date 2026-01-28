@@ -15,6 +15,9 @@ type ServicePolicyRemove struct{}
 
 func (s *ServicePolicyRemove) Remove(param RemoveRequestModel) error {
 	httpClient := httpclient.NewHttpClient()
+	if httpClient == nil {
+		return fmt.Errorf("sudo required")
+	}
 	httpClient.NewRequest(
 		http.MethodDelete,
 		fmt.Sprintf("/v1/policies/%s", param.Id),

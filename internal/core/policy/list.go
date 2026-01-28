@@ -58,6 +58,9 @@ func (s *ServicePolicyList) List(param ListRequestModel) error {
 
 func (s *ServicePolicyList) requestGetList(chainName string, chainFlag bool) error {
 	httpClient := httpclient.NewHttpClient()
+	if httpClient == nil {
+		return fmt.Errorf("sudo required")
+	}
 	httpClient.NewRequest(
 		http.MethodGet,
 		fmt.Sprintf("/v1/policies/%s", chainName),

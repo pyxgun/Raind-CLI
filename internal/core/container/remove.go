@@ -15,6 +15,9 @@ type ServiceContainerRemove struct{}
 
 func (s *ServiceContainerRemove) Remove(param ServiceRemoveModel) error {
 	httpClient := httpclient.NewHttpClient()
+	if httpClient == nil {
+		return fmt.Errorf("sudo required")
+	}
 	httpClient.NewRequest(
 		http.MethodDelete,
 		fmt.Sprintf("/v1/containers/%s/actions/delete", param.Id),

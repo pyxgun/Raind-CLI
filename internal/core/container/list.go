@@ -19,6 +19,9 @@ type ServiceContainerList struct{}
 
 func (s *ServiceContainerList) List() error {
 	httpClient := httpclient.NewHttpClient()
+	if httpClient == nil {
+		return fmt.Errorf("sudo required")
+	}
 	httpClient.NewRequest(
 		http.MethodGet,
 		"/v1/containers",

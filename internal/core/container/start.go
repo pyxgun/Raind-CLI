@@ -25,6 +25,9 @@ func (s *ServiceContainerStart) Start(param ServiceStartModel) error {
 	}
 
 	httpClient := httpclient.NewHttpClient()
+	if httpClient == nil {
+		return fmt.Errorf("sudo required")
+	}
 	httpClient.NewRequest(
 		http.MethodPost,
 		fmt.Sprintf("/v1/containers/%s/actions/start", param.Id),
